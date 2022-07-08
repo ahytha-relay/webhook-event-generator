@@ -13,7 +13,7 @@ fastify.get('/helloworld', async (request, reply) => {
 const start = async () => {
   try {
     await fastify.listen({
-      port: 3000,
+      port: 8080,
       host: '0.0.0.0'
     });
   } catch (err) {
