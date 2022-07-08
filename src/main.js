@@ -1,6 +1,8 @@
 const fastify = require('fastify')({ logger: true });
 
 fastify.get('/', async (request, reply) => {
+  console.log("server hit");
+  reply.s
   return 'Hello World';
 });
 
