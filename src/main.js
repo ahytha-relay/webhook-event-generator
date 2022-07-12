@@ -7,7 +7,7 @@ fastify.get('/', async (request, reply) => {
 
 fastify.get('/helloworld', async (request, reply) => {
   console.log("server hit");
-  reply.send('Hello World');
+  reply.send('Hello World 2');
 });
 
 const start = async () => {

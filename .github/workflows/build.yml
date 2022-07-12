@@ -32,4 +32,8 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+    - name: Force ECS deployment
+      run: |
+        aws ecs update-service --cluster webhook-cluster --service webhook-service --force-new-deployment
     
