@@ -57,4 +57,4 @@ jobs:
           BRANCHNAME: ${{env.BRANCHNAME}}
         working-directory: ./
         run: |
-          npx -y auto release --no-version-prefix --user-version $BRANCHNAME
+          npx -y auto release --no-version-prefix --use-version $BRANCHNAME
