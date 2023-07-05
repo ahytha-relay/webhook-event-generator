@@ -33,7 +33,7 @@ jobs:
         run: |
           export DATE=$(date '+%Y-%m-%d')
           export SUFFIX=1
-          while git branch | grep -w "RELEASE-$DATE-$(printf '%02d' $SUFFIX)"
+          while git branch -r | grep -w "RELEASE-$DATE-$(printf '%02d' $SUFFIX)"
           do
             ((SUFFIX++)) 
           done
