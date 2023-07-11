@@ -1,0 +1,11 @@
+name: Docker Image CI
+
+on: workflow_call
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Running
+      run: |
+        echo "hello other repo"
