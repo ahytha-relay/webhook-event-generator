@@ -41,9 +41,10 @@ jobs:
           git config --global user.name "Auto Release Agent"
       
       - name: Set up environment
+        env:
+          INPUT_NAME: ${{inputs.release-name}}
+          BRANCH_NAME: ${{inputs.branch-name}}
         run: |
-          export INPUT_NAME=${{inputs.release-name}}
-          export BRANCH_NAME=${{inputs.branch-name}}
           export RELEASE_NAME="${INPUT_NAME:-${BRANCH_NAME}}"
           echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_ENV
      
