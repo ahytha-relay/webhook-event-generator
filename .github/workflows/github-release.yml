@@ -43,7 +43,7 @@ jobs:
       - name: Set up environment
         env:
           INPUT_NAME: ${{inputs.release-name}}
-          BRANCH_NAME: ${{inputs.branch-name}}
+          BRANCH_NAME: ${{inputs.source-branch}}
         run: |
           export RELEASE_NAME="${INPUT_NAME:-${BRANCH_NAME}}"
           echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_ENV
