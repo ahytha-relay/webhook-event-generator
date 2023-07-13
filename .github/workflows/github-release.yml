@@ -43,7 +43,9 @@ jobs:
       - name: Set up environment
         run: |
           export INPUT_NAME="${{inputs.release-name}}"
-          export RELEASE_NAME="${INPUT_NAME:-${{inputs.source-branch}}}"
+          export BRANCH_NAME="${{inputs.branch-name}}"
+          export RELEASE_NAME="${INPUT_NAME:-${BRANCH_NAME}}"
+          echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_ENV
      
       - name: Create Release Tag
         env:
