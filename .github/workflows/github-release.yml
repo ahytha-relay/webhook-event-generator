@@ -42,7 +42,8 @@ jobs:
       
       - name: Set up environment
         run: |
-          export RELEASE_NAME="${ ${{inputs.release-name}}:-${{inputs.source-branch}}}"
+          export INPUT_NAME="${{inputs.release-name}}"
+          export RELEASE_NAME="${ INPUT_NAME:-${{inputs.source-branch}}}"
      
       - name: Create Release Tag
         env:
