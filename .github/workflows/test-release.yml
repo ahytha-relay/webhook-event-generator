@@ -1,0 +1,15 @@
+name: test Service Release
+
+# Creates a release based on the Relay release requirements.
+# 
+# This action will generate a release name using the current date and the first
+# 7 digits of the current commit SHA. This release name will be used to generate
+# a new entry in the GitHub Release page, a new tag, and a new branch with the
+# release named prefixed with `RELEASE-`.
+
+on: workflow_dispatch
+
+jobs:
+  run-release:
+    uses: ./.github/workflows/service-release.yml
+    secrets: inherit

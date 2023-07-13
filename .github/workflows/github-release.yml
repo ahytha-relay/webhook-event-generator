@@ -1,4 +1,4 @@
-name: Create a GitHub release
+name: Create GitHub release
 
 # Creates a release based on the Relay release requirements.
 # 
@@ -6,22 +6,16 @@ name: Create a GitHub release
 # will also generate a new entry in the GitHub Release page and a new tag.
 
 on: 
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      source-branch:
-        description: 'Name of the branch or tag being used as the release artifact'
-        default: 'main'
-        required: true
-        type: string
       release-name:
-        description: 'Name of the release'
-        default: ""
+        description: 'Name of the release (defaults to the source branch name)'
         required: false
         type: string
 
 jobs:
   release:
-    name: Create Release Version
+    name: Create GitHub Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -40,27 +34,28 @@ jobs:
           git config --global user.email "autoci@relaynetwork.com"
           git config --global user.name "Auto Release Agent"
       
-      - name: Set up environment
+      - name: Generate the Release Name
+        id: generate-name
         env:
           INPUT_NAME: ${{inputs.release-name}}
-          BRANCH_NAME: ${{inputs.source-branch}}
         run: |
+          export BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           export RELEASE_NAME="${INPUT_NAME:-${BRANCH_NAME}}"
-          echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_ENV
+          echo "branch_name=${RELEASE_NAME}" >> $GITHUB_OUTPUT
      
       - name: Create Release Tag
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          RELEASE_NAME: ${{env.RELEASE_NAME}}
+          RELEASE_NAME: ${{steps.generate-name.outputs.RELEASE_NAME}}
         run: |
-          # git tag $RELEASE_NAME
-          # git push origin --tags
+          git tag $RELEASE_NAME
+          git push origin --tags
           echo "release is $RELEASE_NAME"
 
       - name: Create Release
         env:
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          RELEASE_NAME: ${{env.RELEASE_NAME}}
+          RELEASE_NAME: ${{steps.generate-name.outputs.RELEASE_NAME}}
         working-directory: ./
         run: |
-          # npx -y auto release --no-version-prefix --use-version $RELEASE_NAME
+          npx -y auto release --no-version-prefix --use-version $RELEASE_NAME

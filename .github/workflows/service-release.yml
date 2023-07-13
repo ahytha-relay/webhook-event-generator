@@ -1,4 +1,4 @@
-name: Create a GitHub release
+name: Create Release Branch
 
 # Creates a release based on the Relay release requirements.
 # 
@@ -7,12 +7,14 @@ name: Create a GitHub release
 # a new entry in the GitHub Release page, a new tag, and a new branch with the
 # release named prefixed with `RELEASE-`.
 
-on: workflow_dispatch
+on: workflow_call
 
 jobs:
-  release:
-    name: Create Release Version
+  create-branch:
+    name: Create Release Branch
     runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{steps.set-parameters.outputs.branch_name}}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -30,6 +32,7 @@ jobs:
           git config --global user.name "Auto Release Agent"
       
       - name: Set up parameters
+        id: set-parameters
         run: |
           export DATE=$(date '+%Y-%m-%d')
           export SUFFIX=1
@@ -38,23 +41,16 @@ jobs:
             ((SUFFIX++)) 
           done
           export BRANCHNAME=RELEASE-$DATE-$(printf '%02d' $SUFFIX)
-          echo "DATE=$DATE" >> $GITHUB_ENV
-          echo "BRANCHNAME=$BRANCHNAME" >> $GITHUB_ENV
+          echo "::set-output name=branch_name::${BRANCHNAME}"
       
       - name: Cut Branch & Tag
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          BRANCHNAME: ${{env.BRANCHNAME}}
+          BRANCH_NAME: ${{steps.set-parameters.outputs.branch_name}}
         run: |
-          git checkout -b $BRANCHNAME
-          git push -u origin $BRANCHNAME
-          git tag $BRANCHNAME
-          git push origin --tags
-
-      - name: Create Release
-        env:
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          BRANCHNAME: ${{env.BRANCHNAME}}
-        working-directory: ./
-        run: |
-          npx -y auto release --no-version-prefix --use-version $BRANCHNAME
+          git checkout -b $BRANCH_NAME
+          git push -u origin $BRANCH_NAME
+  github-release:
+    uses: ./.github/workflows/github-release.yml
+    secrets: inherit
+    needs: [create-branch]
