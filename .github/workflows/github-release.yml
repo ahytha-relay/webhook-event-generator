@@ -1,0 +1,62 @@
+name: Create a GitHub release
+
+# Creates a release based on the Relay release requirements.
+# 
+# This action will generate a GitHub Release using the given source branch. It
+# will also generate a new entry in the GitHub Release page and a new tag.
+
+on: 
+  workflow_dispatch:
+    inputs:
+      source-branch:
+        description: 'Name of the branch or tag being used as the release artifact'
+        default: 'main'
+        required: true
+        type: string
+      release-name:
+        description: 'Name of the release'
+        default: ""
+        required: false
+        type: string
+
+jobs:
+  release:
+    name: Create Release Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          fetch-depth: 0
+          ref: ${{ inputs.source-branch }}
+
+      - name: Install auto
+        run: npm install auto @auto-it/git-tag
+      
+      - name: Set up git user
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: |
+          git config --global user.email "autoci@relaynetwork.com"
+          git config --global user.name "Auto Release Agent"
+      
+      - name: Set up environment
+        run: |
+          export RELEASE_NAME="${ ${{inputs.release-name}}:-${{inputs.source-branch}}}"
+     
+      - name: Create Release Tag
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          RELEASE_NAME: ${{env.RELEASE_NAME}}
+        run: |
+          git tag $RELEASE_NAME
+          # git push origin --tags
+          echo "release is $RELEASE_NAME"
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          RELEASE_NAME: ${{env.RELEASE_NAME}}
+        working-directory: ./
+        run: |
+          # npx -y auto release --no-version-prefix --use-version $RELEASE_NAME
