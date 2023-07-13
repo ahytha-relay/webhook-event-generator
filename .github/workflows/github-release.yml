@@ -50,7 +50,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           RELEASE_NAME: ${{env.RELEASE_NAME}}
         run: |
-          git tag $RELEASE_NAME
+          # git tag $RELEASE_NAME
           # git push origin --tags
           echo "release is $RELEASE_NAME"
 
