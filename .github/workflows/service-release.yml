@@ -40,7 +40,7 @@ jobs:
           do
             ((SUFFIX++)) 
           done
-          export BRANCHNAME=RELEASE-$DATE-$(printf '%02d' $SUFFIX)
+          export BRANCHNAME=RELEASE-$DATE-$(printf '%02d' $SUFFIX)-test
           echo "::set-output name=branch_name::${BRANCHNAME}"
       
       - name: Cut Branch & Tag
