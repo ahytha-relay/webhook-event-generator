@@ -54,3 +54,5 @@ jobs:
     uses: ./.github/workflows/github-release.yml
     secrets: inherit
     needs: [create-branch]
+    with:
+      release-name: ${{needs.set-parameters.outputs.branch_name}}
