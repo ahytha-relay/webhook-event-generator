@@ -52,7 +52,7 @@ jobs:
       - name: Create Release
         env:
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          RELEASE_NAME: ${{steps.generate-name.outputs.RELEASE_NAME}}
+          RELEASE_NAME: ${{steps.generate-name.outputs.branch_name}}
         working-directory: ./
         run: |
           gh release create $RELEASE_NAME -t $RELEASE_NAME --generate-notes --target ${{ github.sha }}
