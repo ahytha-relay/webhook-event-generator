@@ -58,4 +58,4 @@ jobs:
           RELEASE_NAME: ${{steps.generate-name.outputs.RELEASE_NAME}}
         working-directory: ./
         run: |
-          gh release create --generate-notes $RELEASE_NAME --target ${{ github.sha }}
+          gh release create $RELEASE_NAME --generate-notes --target ${{ github.sha }}
