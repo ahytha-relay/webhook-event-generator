@@ -41,7 +41,7 @@ jobs:
             ((SUFFIX++)) 
           done
           export BRANCHNAME=RELEASE-$DATE-$(printf '%02d' $SUFFIX)
-          echo "::set-output name=branch_name::${BRANCHNAME}"
+          echo "branch_name=${BRANCHNAME}" >> $GITHUB_OUTPUT
       
       - name: Cut Branch & Tag
         env:
